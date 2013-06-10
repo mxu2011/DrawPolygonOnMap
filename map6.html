@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title>SetCredentials</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+      <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?
+v=6.3"></script>
+
+      <script type="text/javascript">
+         var map     = null;
+         
+         function GetMap()
+         {
+            map = new VEMap('myMap');
+            map.SetCredentials("Your Bing Maps Key");
+     
+            //map.LoadMap(new VELatLong(41.96514,-87.80356)); 
+			map.LoadMap(); 				
+
+			//This is the verification of production example 1
+			var pointString ="-118.845766 34.335579,-118.384777 34.013743,-118.845766 34.013743,-118.384777 34.335579,-118.845766 34.335579";
+			DrawMap(map, pointString, new VEColor(100,100,150,0.5))
+			
+
+			pointString ="-118.845766 34.013743,-118.384777 34.013743,-118.6152715 34.174661,-118.845766 34.013743"
+			DrawMap(map, pointString, new VEColor(0,100,150,0.5))
+			
+			pointString ="-118.845766 34.335579,-118.6152715 34.174661,-118.384777 34.335579,-118.845766 34.335579"
+			DrawMap(map, pointString, new VEColor(0,100,0,0.5))
+		
+
+         }
+		 
+		 function DrawMap(map, pointString, color)
+		 {
+			var pointStringArray = pointString.split(',');
+			points=[]
+						
+			for( var i in pointStringArray)
+			{
+				//var xy = pointStringArray[i].split(',');
+				var xy = pointStringArray[i].split(' ');
+				points.push(new VELatLong(parseFloat(xy[1]),parseFloat(xy[0])))
+				point = new VELatLong(parseFloat(xy[1]),parseFloat(xy[0]));
+				var pin = new VEShape(VEShapeType.Pushpin, point);
+				
+				if(i==0)
+				{
+					var initView = new VEMapViewSpecification(point, 16);			
+					map.SetMapView(initView);
+				}
+				
+				pin.SetTitle("#"+i.toString()+",lat="+xy[1]+"\nlong="+xy[0]);
+				console.log("i="+i);
+				map.AddShape(pin);
+			}
+
+			polygon = new VEShape(VEShapeType.Polygon, points);
+			polygon.SetFillColor(color);
+
+			//polygon.HideIcon();
+
+			map.AddShape(polygon);
+		 }
+
+      </script>
+   </head>
+   <body onload="GetMap();">
+      <div id='myMap' style="position:relative; width:1600px; height:1000px;"></div>
+   </body>
+</html>
