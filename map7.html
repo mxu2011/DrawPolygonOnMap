@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title>SetCredentials</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+      <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?
+v=6.3"></script>
+
+      <script type="text/javascript">
+         var map     = null;
+         
+         function GetMap()
+         {
+            map = new VEMap('myMap');
+            map.SetCredentials("Your Bing Maps Key");
+     
+            //map.LoadMap(new VELatLong(41.96514,-87.80356)); 
+			map.LoadMap(); 				
+
+			//This is the verification of production example 1
+			var pointString ="-88.69626 32.36626,-88.69697 32.36713,-88.69706 32.36722,-88.69713 32.3673,-88.69719 32.36738,-88.69729 32.36747,-88.69743 32.36758,-88.69749 32.36765,-88.69759 32.36777,-88.69767 32.36791,-88.69769 32.36798,-88.69626 32.36626";
+			DrawMap(map, pointString, new VEColor(100,100,150,0.5))
+			
+
+			pointString ="-88.69769 32.36798,-88.69767 32.36791,-88.69759 32.36777,-88.69749 32.36765,-88.69743 32.36758,-88.69729 32.36747,-88.6971946189376 32.36738415704383,-88.69769 32.36798"
+			DrawMap(map, pointString, new VEColor(0,100,150,0.5))
+			
+			pointString ="-88.6971946189376 32.36738415704383,-88.69717928571437 32.36736571428582,-88.69719 32.36738,-88.6971946189376 32.36738415704383"
+			DrawMap(map, pointString, new VEColor(0,100,0,0.5))
+			
+			pointString ="-88.69717928571437 32.36736571428582,-88.69713 32.3673,-88.69706 32.36722,-88.69704896551728 32.367208965517285,-88.69717928571437 32.36736571428582"
+			DrawMap(map, pointString, new VEColor(50,100,0,0.5))
+			
+			pointString ="-88.69704896551728 32.367208965517285,-88.69626 32.36626,-88.69697 32.36713,-88.69704896551728 32.367208965517285"
+			DrawMap(map, pointString, new VEColor(0,100,50,0.5))
+		
+         }
+		 
+		 function DrawMap(map, pointString, color)
+		 {
+			var pointStringArray = pointString.split(',');
+			points=[]
+						
+			for( var i in pointStringArray)
+			{
+				//var xy = pointStringArray[i].split(',');
+				var xy = pointStringArray[i].split(' ');
+				points.push(new VELatLong(parseFloat(xy[1]),parseFloat(xy[0])))
+				point = new VELatLong(parseFloat(xy[1]),parseFloat(xy[0]));
+				var pin = new VEShape(VEShapeType.Pushpin, point);
+				
+				if(i==0)
+				{
+					var initView = new VEMapViewSpecification(point, 30);			
+					map.SetMapView(initView);
+				}
+				
+				pin.SetTitle("#"+i.toString()+",lat="+xy[1]+"\nlong="+xy[0]);
+				console.log("i="+i);
+				map.AddShape(pin);
+			}
+
+			polygon = new VEShape(VEShapeType.Polygon, points);
+			polygon.SetFillColor(color);
+
+			//polygon.HideIcon();
+
+			map.AddShape(polygon);
+		 }
+
+      </script>
+   </head>
+   <body onload="GetMap();">
+      <div id='myMap' style="position:relative; width:1600px; height:1000px;"></div>
+   </body>
+</html>
