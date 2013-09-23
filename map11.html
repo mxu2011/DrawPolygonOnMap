@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title>SetCredentials</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+      <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?
+v=6.3"></script>
+
+      <script type="text/javascript">
+         var map     = null;
+         
+         function GetMap()
+         {
+            map = new VEMap('myMap');
+            map.SetCredentials("Your Bing Maps Key");
+     
+            //map.LoadMap(new VELatLong(41.96514,-87.80356)); 
+			map.LoadMap(); 
+			
+			var pointString = "-118.48312924987793,34.074667011263],[-118.48312924987793,33.98859929584279],[-118.16401075012207,33.98859929584279],[-118.16401075012207,34.074667011263],[-118.48312924987793,34.074667011263],-118.36345981246949,34.04240185010362],[-118.36345981246949,34.02088492021691],[-118.28368018753052,34.02088492021691],[-118.28368018753052,34.04240185010362],[-118.36345981246949,34.04240185010362";
+			var pointStringArray = pointString.split('],[');
+			points=[]
+			
+			
+			for( var i in pointStringArray)
+			{
+				var xy = pointStringArray[i].split(',');
+				points.push(new VELatLong(parseFloat(xy[1]),parseFloat(xy[0])))
+				var pin = new VEShape(VEShapeType.Pushpin, new VELatLong(parseFloat(xy[1]),parseFloat(xy[0])));
+				pin.SetTitle("#"+i.toString()+",lat="+xy[1]+"long="+xy[0]);
+				map.AddShape(pin);
+			}
+
+			polyline = new VEShape(VEShapeType.Polyline, points);
+
+			//polyline.HideIcon();
+
+			map.AddShape(polyline);
+
+         }
+
+      </script>
+   </head>
+   <body onload="GetMap();">
+      <div id='myMap' style="position:relative; width:1600px; height:1000px;"></div>
+   </body>
+</html>
