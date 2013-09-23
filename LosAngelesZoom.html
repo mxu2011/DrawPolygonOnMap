@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title>SetCredentials</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+      <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?
+v=6.3"></script>
+
+      <script type="text/javascript">
+         var map     = null;
+         
+         function GetMap()
+         {
+            map = new VEMap('myMap');
+            map.SetCredentials("Your Bing Maps Key");
+     
+            //map.LoadMap(new VELatLong(41.96514,-87.80356)); 
+			map.LoadMap(); 
+			
+			var pointString = "-119.6288831107312, 34.30572765901729], [-119.6288831107312, 33.751464216075846], [-117.01825689002807, 33.751464216075846], [-117.01825689002807, 34.30572765901729], [-119.6288831107312, 34.30572765901729], [-118.97622655555541, 34.16750144109636], [-118.97622655555541, 33.89036927870302], [-117.67091344520385, 33.89036927870302], [-117.67091344520385, 34.16750144109636], [-118.97622655555541, 34.16750144109636], [-118.64989827796752, 34.098303284348574], [-118.64989827796752, 33.95973714803689], [-117.99724172279174, 33.95973714803689], [-117.99724172279174, 34.098303284348574], [-118.64989827796752, 34.098303284348574";
+			var pointStringArray = pointString.split('], [');
+			points=[]
+			
+			
+			for( var i in pointStringArray)
+			{
+				var xy = pointStringArray[i].split(', ');
+				points.push(new VELatLong(parseFloat(xy[1]),parseFloat(xy[0])))
+				var pin = new VEShape(VEShapeType.Pushpin, new VELatLong(parseFloat(xy[1]),parseFloat(xy[0])));
+				pin.SetTitle("#"+i.toString()+",lat="+xy[1]+"long="+xy[0]);
+				map.AddShape(pin);
+			}
+
+			polyline = new VEShape(VEShapeType.Polyline, points);
+
+			//polyline.HideIcon();
+
+			map.AddShape(polyline);
+
+         }
+
+      </script>
+   </head>
+   <body onload="GetMap();">
+      <div id='myMap' style="position:relative; width:1600px; height:1000px;"></div>
+   </body>
+</html>
