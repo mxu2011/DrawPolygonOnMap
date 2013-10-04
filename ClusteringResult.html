@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title>SetCredentials</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+      <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?
+v=6.3"></script>
+
+      <script type="text/javascript">
+         var map     = null;
+         
+         function GetMap()
+         {
+            map = new VEMap('myMap');
+            map.SetCredentials("Your Bing Maps Key");
+     
+            //map.LoadMap(new VELatLong(41.96514,-87.80356)); 
+			map.LoadMap(); 
+			
+			//geocluster.viewport
+			// -125.485480261719,36.7777670138093],[-109.071906042969,29.4244561620721
+			pointString = "-125.485480261719,36.7777670138093],[-109.071906042969,29.4244561620721";
+			DrawPolyline(map, pointString, new VEColor(0,0,0,1));
+			
+			
+			//poly:
+			// -125.485480261719,36.7777670138093],[-125.485480261719,29.4244561620721],[-109.071906042969,29.4244561620721],[-109.071906042969,36.7777670138093],[-125.485480261719,36.7777670138093
+			pointString2 = "-125.485480261719,36.7777670138093],[-125.485480261719,29.4244561620721],[-109.071906042969,29.4244561620721],[-109.071906042969,36.7777670138093],[-125.485480261719,36.7777670138093";
+			DrawPolyline(map, pointString2, new VEColor(255,0,0,1));
+			
+
+			//1 pin result:
+			// -125.485480261719,36.7777670138093],[-109.6875,35.4606699514953],[-109.6875,36.031331776331875],[-125.485480261719,36.7777670138093
+			pointString3 = "-125.485480261719,36.7777670138093],[-109.6875,35.4606699514953],[-109.6875,36.031331776331875],[-125.485480261719,36.7777670138093";
+			DrawPolyline(map, pointString3, new VEColor(0,255,0,1));
+			
+			var pin = new VEShape(VEShapeType.Pushpin, new VELatLong(36.03133177633187,109.6875));
+			pin.SetTitle("Point coordinates");
+			map.AddShape(pin);
+
+         }
+		 		 
+		 function DrawPolyline(map, pointString, color)
+		 {
+		 			
+			var pointStringArray = pointString.split('],[');
+			points=[]
+			
+			
+			for( var i in pointStringArray)
+			{
+				var xy = pointStringArray[i].split(',');
+				points.push(new VELatLong(parseFloat(xy[1]),parseFloat(xy[0])))
+				var pin = new VEShape(VEShapeType.Pushpin, new VELatLong(parseFloat(xy[1]),parseFloat(xy[0])));
+				pin.SetTitle("#"+i.toString()+",lat="+xy[1]+"long="+xy[0]);
+				//map.AddShape(pin);
+				
+				
+				if(i==0)
+				{
+					var initView = new VEMapViewSpecification(points[i], 11);	
+					map.SetMapView(initView);
+				}
+			}
+
+			polyline = new VEShape(VEShapeType.Polyline, points);
+			
+			polyline.SetLineColor(color);
+
+			map.AddShape(polyline);
+		 }
+
+      </script>
+   </head>
+   <body onload="GetMap();">
+      <div id='myMap' style="position:relative; width:1600px; height:1000px;"></div>
+   </body>
+</html>
