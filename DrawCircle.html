@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+   <head>
+      <title>Circle Example Bing Maps</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2"></script>
+      <script type="text/javascript">
+          var map = null;
+          var pinid = 0;
+
+          function GetMap() {
+              map = new VEMap('myMap');
+              map.LoadMap();
+              map.SetZoomLevel(2);
+          }
+
+          function AddPolyline() {
+              //var ll = map.GetCenter();
+			  var ll = new VELatLong(47.63346896030285,-122.40114390850067);
+              var shape = new VEShape(VEShapeType.Polyline, getCircle(ll, 0.1866839));
+              shape.SetTitle('My circle');
+              shape.SetDescription('This is shape number ' + pinid);
+              pinid++;
+              map.AddShape(shape);
+			  
+			  //original viewport: 47.6357411173573,-122.40362629294395&viewport_bottom_right=47.63119647850693,-122.39866118878126
+			  
+    			//var pointString = "-122.40362629294395,47.6357411173573],[-122.40362629294395,47.63119647850693],[-122.39866118878126,47.63119647850693],[-122.39866118878126,47.6357411173573],[-122.40362629294395,47.6357411173573";
+			  
+			  //bounding box(47.634654778901,-122.40290368021),(47.632283114796,-122.40290368021),(47.632283114796,-122.39938421665),(47.634654778901,-122.39938421665),(47.634654778901,-122.40290368021)
+			  
+  			var pointString = "-122.40290368021,47.634654778901],[-122.40290368021,47.632283114796],[-122.39938421665,47.632283114796],[-122.39938421665,47.634654778901],[-122.40290368021,47.634654778901";
+  			var pointStringArray = pointString.split('],[');
+  			points=[]
+			
+			
+  			for( var i in pointStringArray)
+  			{
+  				var xy = pointStringArray[i].split(',');
+  				points.push(new VELatLong(parseFloat(xy[1]),parseFloat(xy[0])))
+  				var pin = new VEShape(VEShapeType.Pushpin, new VELatLong(parseFloat(xy[1]),parseFloat(xy[0])));
+  				pin.SetTitle("#"+i.toString()+",lat="+xy[1]+"long="+xy[0]);
+  				map.AddShape(pin);
+  			}
+
+  			polyline = new VEShape(VEShapeType.Polyline, points);
+
+  			//polyline.HideIcon();
+
+  			map.AddShape(polyline);			  
+			  
+			  
+          }
+          
+          function getCircle(loc, radius) {
+              var R = 6371; // earth's mean radius in km
+              var lat = (loc.Latitude * Math.PI) / 180; //rad
+              var lon = (loc.Longitude * Math.PI) / 180; //rad
+              var d = parseFloat(radius) / R;  // d = angular distance covered on earth's surface
+              var locs = new Array();
+              for (x = 0; x <= 360; x++) {
+                  var p2 = new VELatLong(0, 0)
+                  brng = x * Math.PI / 180; //rad
+                  p2.Latitude = Math.asin(Math.sin(lat) * Math.cos(d) + Math.cos(lat) * Math.sin(d) * Math.cos(brng));
+                  p2.Longitude = ((lon + Math.atan2(Math.sin(brng) * Math.sin(d) * Math.cos(lat), Math.cos(d) - Math.sin(lat) * Math.sin(p2.Latitude))) * 180) / Math.PI;
+                  p2.Latitude = (p2.Latitude * 180) / Math.PI;
+                  locs.push(p2);
+              }
+              return locs;
+          }
+
+      
+      </script>
+   </head>
+   <body onload="GetMap();">
+      <div id='myMap' style="position:relative; width:400px; height:400px;"></div>
+      <div><a href='#' onclick='AddPolyline();'>Add Circle</a></div>
+   </body>
+</html>
